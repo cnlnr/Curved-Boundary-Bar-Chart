@@ -16,3 +16,5 @@
 - **HiDPI 高清渲染**：基于 Canvas 物理像素缩放，自动适配 Retina 高分屏。
 
 ## 🚀 快速开始
+
+查看演示：<https://cnlnr.github.io/Curved-Boundary-Bar-Chart/>
