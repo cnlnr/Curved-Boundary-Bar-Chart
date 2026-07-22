@@ -149,7 +149,8 @@
 
     <div class="header">
         <h1>曲界线柱状图 (Phase-Bar Diagram)</h1>
-        <p>动态调整气压与温度，观察柱体顶点跨越弯曲界线时的状态变更</p>
+        <p>动态调整气压与温度，观察柱体顶点跨越弯曲界线时的状态变更 (Dynamically adjust pressure and temperature to observe phase changes as the bar
+            top crosses curved boundaries)</p>
     </div>
 
     <div class="container">
@@ -159,17 +160,17 @@
 
         <div class="controls">
             <div class="control-group">
-                <label>压强 / P (X 轴位置) <span id="pVal" class="val">1.00 atm</span></label>
+                <label>压强 (Pressure / P) <span id="pVal" class="val">1.00 atm</span></label>
                 <input type="range" id="sliderP" min="0.01" max="10" step="0.01" value="1.00">
             </div>
 
             <div class="control-group">
-                <label>温度 / T (柱体高度) <span id="tVal" class="val">25 °C</span></label>
+                <label>温度 (Temperature / T) <span id="tVal" class="val">25 °C</span></label>
                 <input type="range" id="sliderT" min="-50" max="450" step="1" value="25">
             </div>
 
             <div class="status-card" id="statusCard">
-                <div class="status-title">当前物理状态判定</div>
+                <div class="status-title">当前物理状态判定 (Current Phase Determination)</div>
                 <div class="status-value" id="phaseStatus">液态 (Liquid)</div>
             </div>
         </div>
@@ -370,7 +371,7 @@
             ctx.fillStyle = '#c9d1d9';
             ctx.font = '11px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText('三相点', tpX + 8, tpY + 3);
+            ctx.fillText('三相点 (Triple Point)', tpX + 8, tpY + 3);
 
             const cpX = mapPToX(criticalPoint.p);
             const cpY = mapTToY(criticalPoint.t);
@@ -378,7 +379,7 @@
             ctx.beginPath();
             ctx.arc(cpX, cpY, 4, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillText('临界点', cpX + 8, cpY + 3);
+            ctx.fillText('临界点 (Critical Point)', cpX + 8, cpY + 3);
         }
 
         function drawPhaseBar(p, t, phase) {
