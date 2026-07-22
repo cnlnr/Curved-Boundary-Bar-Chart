@@ -1,4 +1,27 @@
-# Curved-Boundary Bar Chart (曲界线柱状图)
+# Curved-Boundary Bar Chart
+
+> A dynamic bar chart component featuring curved decision boundaries, similar in form and concept to a physical phase diagram.
+
+## 💡 Overview
+
+**Curved-Boundary Bar Chart** is an innovative interactive data visualization component inspired by physical phase diagrams.
+
+By controlling the **horizontal position (X-axis)** and **height (Y-axis)** of the bars, the component calculates the collision/intersection between the top vertices of the bars and curved boundary lines in the coordinate system, dynamically determining and displaying current physical states or business intervals.
+
+## ✨ Key Features
+
+- **Curved Boundary Collision Detection**: Utilizes smooth curves as dynamic thresholds; state changes are triggered in real time as bar tops cross boundaries.
+- **Two-Dimensional Parameter Mapping**: Maps position along the X-axis (e.g., Pressure $P$) and height along the Y-axis (e.g., Temperature $T$).
+- **Multi-State Coverage**: Full boundary logic for solid, liquid, gas, and supercritical fluid phase determinations.
+- **HiDPI High-Resolution Rendering**: Canvas rendering based on physical pixel scaling, ensuring crisp display on Retina screens.
+
+## 🚀 Quick Start
+
+Live Demo: <https://cnlnr.github.io/Curved-Boundary-Bar-Chart/>
+
+---
+
+# 曲界线柱状图
 
 > 带有弯曲判定边界的动态柱状图组件，形态与原理类似物理学中的“三相图”。
 
