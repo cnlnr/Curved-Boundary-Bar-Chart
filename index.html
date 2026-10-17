@@ -74,7 +74,7 @@
 
     const vapPts = Array.from({ length: 60 }, (_, i) => {
       const p = TP.p + (i / 59) * (CP.p - TP.p);
-      return { x: p, y: TP.t + (CP.t - TP.t) * Math.pow((p - TP.p) / (CP.p - TP.p), 0.45) };
+      return { x: p, y: TP.t + (CP.t - TP.t) * Math.pow((p - TP.p) / (CP.p - TP.p), 0.3757) };
     });
 
     function getPhase(p, t) {
@@ -86,7 +86,7 @@
       const meltT = TP.t - 3.5 * Math.log(p / TP.p + 1);
       if (t < meltT) return PHASES.SOLID;
       if (p <= CP.p) {
-        const vapT = TP.t + (CP.t - TP.t) * Math.pow((p - TP.p) / (CP.p - TP.p), 0.45);
+        const vapT = TP.t + (CP.t - TP.t) * Math.pow((p - TP.p) / (CP.p - TP.p), 0.3757);
         return t < vapT ? PHASES.LIQUID : PHASES.GAS;
       }
       return PHASES.LIQUID;
