@@ -1,435 +1,302 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>曲界线柱状图 (Phase-Bar Diagram) Demo</title>
-    <!--
-      License: Apache-2.0
-      Copyright 2026 Phase-Bar Diagram Contributors
-    -->
-    <style>
-        :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --text-main: #c9d1d9;
-            --text-sub: #8b949e;
-            --border-color: #30363d;
-            --accent-color: #58a6ff;
-        }
-
-        body {
-            margin: 0;
-            padding: 24px;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            margin: 0 0 6px 0;
-            font-size: 1.6rem;
-            color: #f0f6fc;
-            font-weight: 600;
-        }
-
-        .header p {
-            margin: 0;
-            color: var(--text-sub);
-            font-size: 0.88rem;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            width: 720px;
-            box-sizing: border-box;
-        }
-
-        .canvas-wrapper {
-            position: relative;
-            width: 100%;
-            height: 420px;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            background-color: #090d12;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            background: #0d1117;
-            padding: 16px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .control-group label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--text-sub);
-        }
-
-        .control-group label span.val {
-            color: var(--text-main);
-            font-weight: 600;
-            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--accent-color);
-            cursor: pointer;
-        }
-
-        .status-card {
-            grid-column: span 2;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #161b22;
-            padding: 10px 16px;
-            border-radius: 4px;
-            border-left: 4px solid var(--accent-color);
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .status-title {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-        }
-
-        .status-value {
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
-        }
-
-        .license-tag {
-            margin-top: 16px;
-            font-size: 0.75rem;
-            color: #484f58;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>曲界线柱状图 (Curved-Boundary Bar Chart)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js" integrity="sha512-WoViKhKD4qI2WruSZqv9+kvM4WfFhUMQCLN4QlDTt5aU56fLQy2gYoxWIqlEnXqJy/+Ac5q/hk1oWfqnMDhwMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --sub: #8b949e; --blue: #58a6ff; }
+    body { margin: 0; padding: 20px; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; }
+    .header { text-align: center; margin-bottom: 14px; }
+    .header h1 { margin: 0 0 6px 0; font-size: 1.45rem; color: #f0f6fc; letter-spacing: 0.5px; }
+    .github-link { display: inline-flex; align-items: center; gap: 6px; color: var(--blue); text-decoration: none; font-size: 0.85rem; font-family: monospace; background: rgba(88, 166, 255, 0.1); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(88, 166, 255, 0.25); transition: 0.2s; }
+    .github-link:hover { background: rgba(88, 166, 255, 0.2); }
+    .box { width: 720px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; box-sizing: border-box; }
+    .chart-container { position: relative; width: 100%; height: 420px; }
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; background: var(--bg); padding: 14px; border-radius: 6px; border: 1px solid var(--border); }
+    .controls label { display: flex; justify-content: space-between; font-size: 13px; color: var(--sub); margin-bottom: 6px; }
+    .status-bar { grid-column: span 2; display: flex; justify-content: space-between; padding: 10px 14px; border-left: 4px solid var(--blue); background: var(--card); border-radius: 4px; font-weight: 600; font-family: monospace; }
+  </style>
 </head>
-
 <body>
 
-    <div class="header">
-        <h1>曲界线柱状图 (Phase-Bar Diagram)</h1>
-        <p>动态调整气压与温度，观察柱体顶点跨越弯曲界线时的状态变更 (Dynamically adjust pressure and temperature to observe phase changes as the bar
-            top crosses curved boundaries)</p>
+  <!-- 顶部标题与开源项目链接 -->
+  <div class="header">
+    <h1>曲界线柱状图 (Curved-Boundary Bar Chart)</h1>
+    <a class="github-link" href="https://github.com/cnlnr/Curved-Boundary-Bar-Chart" target="_blank" rel="noopener noreferrer">
+      <svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+      </svg>
+      https://github.com/cnlnr/Curved-Boundary-Bar-Chart
+    </a>
+  </div>
+
+  <div class="box">
+    <div class="chart-container">
+      <canvas id="mainChart"></canvas>
     </div>
-
-    <div class="container">
-        <div class="canvas-wrapper">
-            <canvas id="phaseCanvas"></canvas>
-        </div>
-
-        <div class="controls">
-            <div class="control-group">
-                <label>压强 (Pressure / P) <span id="pVal" class="val">1.00 atm</span></label>
-                <input type="range" id="sliderP" min="0.01" max="10" step="0.01" value="1.00">
-            </div>
-
-            <div class="control-group">
-                <label>温度 (Temperature / T) <span id="tVal" class="val">25 °C</span></label>
-                <input type="range" id="sliderT" min="-50" max="450" step="1" value="25">
-            </div>
-
-            <div class="status-card" id="statusCard">
-                <div class="status-title">当前物理状态判定 (Current Phase Determination)</div>
-                <div class="status-value" id="phaseStatus">液态 (Liquid)</div>
-            </div>
-        </div>
+    <div class="controls">
+      <div>
+        <label>压强 (P) <span id="pVal">1.00 atm</span></label>
+        <input type="range" id="sliderP" min="0.01" max="10" step="0.01" value="1.00" style="width: 100%;">
+      </div>
+      <div>
+        <label>温度 (T) <span id="tVal">25 °C</span></label>
+        <input type="range" id="sliderT" min="-50" max="450" step="1" value="25" style="width: 100%;">
+      </div>
+      <div class="status-bar" id="statusCard">
+        <span style="color:#8b949e">水的状态</span>
+        <span id="phaseStatus">液态 (Liquid)</span>
+      </div>
     </div>
+  </div>
 
-    <div class="license-tag">Licensed under Apache-2.0</div>
+  <script>
+    const TP = { p: 0.8, t: 0.01 }, CP = { p: 7.5, t: 374 };
+    const PHASES = {
+      SOLID: { name: '固态 (Solid)', color: '#38bdf8' },
+      LIQUID: { name: '液态 (Liquid)', color: '#3b82f6' },
+      GAS: { name: '气态 (Gas)', color: '#f59e0b' },
+      SUPERCRITICAL: { name: '超临界流体 (Supercritical)', color: '#bc8cff' }
+    };
 
-    <script>
-        const canvas = document.getElementById('phaseCanvas');
-        const ctx = canvas.getContext('2d');
+    // 1. 生成平滑相变分界线数据点
+    const subPts = Array.from({ length: 40 }, (_, i) => {
+      const p = (i / 39) * TP.p;
+      return { x: p, y: -50 + (TP.t - (-50)) * Math.pow(p / TP.p, 0.6) };
+    });
 
-        const sliderP = document.getElementById('sliderP');
-        const sliderT = document.getElementById('sliderT');
-        const pVal = document.getElementById('pVal');
-        const tVal = document.getElementById('tVal');
-        const phaseStatus = document.getElementById('phaseStatus');
-        const statusCard = document.getElementById('statusCard');
+    const meltPts = Array.from({ length: 40 }, (_, i) => {
+      const p = TP.p + (i / 39) * (10 - TP.p);
+      return { x: p, y: TP.t - 3.5 * Math.log(p / TP.p + 1) };
+    });
 
-        // 逻辑画布尺寸
-        const logicalWidth = 678;
-        const logicalHeight = 418;
+    const vapPts = Array.from({ length: 60 }, (_, i) => {
+      const p = TP.p + (i / 59) * (CP.p - TP.p);
+      return { x: p, y: TP.t + (CP.t - TP.t) * Math.pow((p - TP.p) / (CP.p - TP.p), 0.45) };
+    });
 
-        // 绘图区域边距
-        const margin = { top: 40, right: 40, bottom: 50, left: 60 };
-        const width = logicalWidth - margin.left - margin.right;
-        const height = logicalHeight - margin.top - margin.bottom;
+    function getPhase(p, t) {
+      if (p >= CP.p && t >= CP.t) return PHASES.SUPERCRITICAL;
+      if (p < TP.p) {
+        const subT = -50 + (TP.t - (-50)) * Math.pow(p / TP.p, 0.6);
+        return t < subT ? PHASES.SOLID : PHASES.GAS;
+      }
+      const meltT = TP.t - 3.5 * Math.log(p / TP.p + 1);
+      if (t < meltT) return PHASES.SOLID;
+      if (p <= CP.p) {
+        const vapT = TP.t + (CP.t - TP.t) * Math.pow((p - TP.p) / (CP.p - TP.p), 0.45);
+        return t < vapT ? PHASES.LIQUID : PHASES.GAS;
+      }
+      return PHASES.LIQUID;
+    }
 
-        // 坐标映射区间
-        const domainP = { min: 0, max: 10 };
-        const domainT = { min: -50, max: 450 };
+    // 2. 自定义相图渲染插件（底层绘色块 + 顶层标注关键点与彩色柱体状态）
+    const phaseDiagramPlugin = {
+      id: 'phaseDiagramPlugin',
+      beforeDraw(chart) {
+        const { ctx, chartArea, scales: { x, y } } = chart;
+        if (!chartArea) return;
+        ctx.save();
 
-        // 物理临界点
-        const triplePoint = { p: 0.8, t: 0.01 };
-        const criticalPoint = { p: 7.5, t: 374 };
+        const xPx = val => x.getPixelForValue(val);
+        const yPx = val => y.getPixelForValue(val);
 
-        const PHASE_CONFIG = {
-            SOLID: { name: '固态 (Solid)', color: '#38bdf8', border: '#0284c7' },
-            LIQUID: { name: '液态 (Liquid)', color: '#3b82f6', border: '#1d4ed8' },
-            GAS: { name: '气态 (Gas)', color: '#e3b341', border: '#d97706' },
-            SUPERCRITICAL: { name: '超临界流体 (Supercritical)', color: '#bc8cff', border: '#8957e5' }
-        };
+        // --- A. 气态区域 ---
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.22)';
+        ctx.beginPath();
+        ctx.moveTo(xPx(0), yPx(-50));
+        subPts.forEach(pt => ctx.lineTo(xPx(pt.x), yPx(pt.y)));
+        vapPts.forEach(pt => ctx.lineTo(xPx(pt.x), yPx(pt.y)));
+        ctx.lineTo(xPx(CP.p), yPx(450));
+        ctx.lineTo(xPx(0), yPx(450));
+        ctx.closePath();
+        ctx.fill();
 
-        // --- 核心高清缩放处理 ---
-        function setupHiDPI() {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = logicalWidth * dpr;
-            canvas.height = logicalHeight * dpr;
-            ctx.scale(dpr, dpr);
+        // --- B. 液态区域 ---
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.25)';
+        ctx.beginPath();
+        meltPts.forEach((pt, i) => i === 0 ? ctx.moveTo(xPx(pt.x), yPx(pt.y)) : ctx.lineTo(xPx(pt.x), yPx(pt.y)));
+        ctx.lineTo(xPx(10), yPx(CP.t));
+        ctx.lineTo(xPx(CP.p), yPx(CP.t));
+        for (let i = vapPts.length - 1; i >= 0; i--) {
+          ctx.lineTo(xPx(vapPts[i].x), yPx(vapPts[i].y));
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // --- C. 固态区域 ---
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.26)';
+        ctx.beginPath();
+        ctx.moveTo(xPx(0), yPx(-50));
+        subPts.forEach(pt => ctx.lineTo(xPx(pt.x), yPx(pt.y)));
+        meltPts.forEach(pt => ctx.lineTo(xPx(pt.x), yPx(pt.y)));
+        ctx.lineTo(xPx(10), yPx(-50));
+        ctx.closePath();
+        ctx.fill();
+
+        // --- D. 超临界流体区域 ---
+        ctx.fillStyle = 'rgba(188, 140, 255, 0.22)';
+        ctx.beginPath();
+        ctx.moveTo(xPx(CP.p), yPx(CP.t));
+        ctx.lineTo(xPx(10), yPx(CP.t));
+        ctx.lineTo(xPx(10), yPx(450));
+        ctx.lineTo(xPx(CP.p), yPx(450));
+        ctx.closePath();
+        ctx.fill();
+
+        // --- E. 超临界分界虚线 ---
+        ctx.strokeStyle = 'rgba(188, 140, 255, 0.45)';
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(xPx(CP.p), yPx(CP.t));
+        ctx.lineTo(xPx(CP.p), yPx(450));
+        ctx.moveTo(xPx(CP.p), yPx(CP.t));
+        ctx.lineTo(xPx(10), yPx(CP.t));
+        ctx.stroke();
+
+        ctx.restore();
+      },
+      afterDatasetsDraw(chart) {
+        const { ctx, scales: { x, y } } = chart;
+        ctx.save();
+        ctx.font = '600 12px -apple-system, system-ui, sans-serif';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+        ctx.shadowBlur = 4;
+
+        // 1. 标注三相点
+        const tpX = x.getPixelForValue(TP.p);
+        const tpY = y.getPixelForValue(TP.t);
+        ctx.fillStyle = '#ff7b72';
+        ctx.textAlign = 'left';
+        ctx.fillText('三相点 (Triple Point)', tpX + 8, tpY - 6);
+
+        // 2. 标注右上角临界点
+        const cpX = x.getPixelForValue(CP.p);
+        const cpY = y.getPixelForValue(CP.t);
+        ctx.fillStyle = '#d2a8ff';
+        ctx.textAlign = 'right';
+        ctx.fillText('临界点 (Critical Point)', cpX - 8, cpY - 8);
+
+        // 3. 在柱体顶端标注彩色文字：XX°C (物相)
+        const barDataset = chart.data.datasets[4];
+        if (barDataset && barDataset.data && barDataset.data.length > 1) {
+          const topPoint = barDataset.data[1];
+          const curP = topPoint.x;
+          const curT = topPoint.y;
+          const phase = getPhase(curP, curT);
+
+          const barX = x.getPixelForValue(curP);
+          const barY = y.getPixelForValue(curT);
+
+          const shortState = phase.name.split(' ')[0];
+
+          ctx.textAlign = 'center';
+          // 关键变动：动态绑定物相主题色，赋予文本鲜明色彩
+          ctx.fillStyle = phase.color;
+          ctx.font = '700 12px ui-monospace, SFMono-Regular, Menlo, monospace';
+          ctx.fillText(`${curT.toFixed(0)}°C (${shortState})`, barX, barY - 10);
         }
 
-        function mapPToX(p) {
-            return margin.left + ((p - domainP.min) / (domainP.max - domainP.min)) * width;
+        ctx.restore();
+      }
+    };
+
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+      type: 'scatter',
+      plugins: [phaseDiagramPlugin],
+      data: {
+        datasets: [
+          // 升华线 (虚线)
+          {
+            type: 'line', data: subPts, borderColor: '#38bdf8', borderWidth: 2,
+            borderDash: [4, 4], pointRadius: 0, tension: 0.35, showLine: true
+          },
+          // 熔点线
+          {
+            type: 'line', data: meltPts, borderColor: '#3fb950', borderWidth: 2,
+            pointRadius: 0, tension: 0.2, showLine: true
+          },
+          // 汽化线
+          {
+            type: 'line', data: vapPts, borderColor: '#f59e0b', borderWidth: 2.2,
+            pointRadius: 0, tension: 0.35, showLine: true
+          },
+          // 三相点与临界点圆点
+          {
+            type: 'scatter',
+            data: [{ x: TP.p, y: TP.t }, { x: CP.p, y: CP.t }],
+            backgroundColor: ['#f85149', '#bc8cff'],
+            borderColor: '#0d1117',
+            borderWidth: 1.5,
+            pointRadius: 4,
+            pointHoverRadius: 4
+          },
+          // 核心发明：曲界线柱状体（圆点保持精致 2.5px）
+          {
+            type: 'line',
+            data: [{ x: 1.0, y: -50 }, { x: 1.0, y: 25 }],
+            borderColor: '#3b82f6',
+            borderWidth: 14,
+            pointRadius: [0, 2.5],
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#3b82f6',
+            pointBorderWidth: 1,
+            showLine: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: {
+            type: 'linear', min: 0, max: 10,
+            title: { display: true, text: '压强 P (atm)', color: '#8b949e', font: { size: 12 } },
+            grid: { color: 'rgba(255, 255, 255, 0.06)' }, ticks: { color: '#8b949e', stepSize: 2 }
+          },
+          y: {
+            type: 'linear', min: -50, max: 450,
+            title: { display: true, text: '温度 T (°C)', color: '#8b949e', font: { size: 12 } },
+            grid: { color: 'rgba(255, 255, 255, 0.06)' }, ticks: { color: '#8b949e', stepSize: 100 }
+          }
         }
-        function mapTToY(t) {
-            return margin.top + height - ((t - domainT.min) / (domainT.max - domainT.min)) * height;
-        }
+      }
+    });
 
-        // --- 弯曲界线函数方程 ---
-        function getSublimationT(p) {
-            if (p > triplePoint.p) return null;
-            return domainT.min + (triplePoint.t - domainT.min) * Math.pow(p / triplePoint.p, 0.6);
-        }
+    function update(p, t) {
+      const phase = getPhase(p, t);
 
-        function getVaporizationT(p) {
-            if (p < triplePoint.p || p > criticalPoint.p) return null;
-            const normP = (p - triplePoint.p) / (criticalPoint.p - triplePoint.p);
-            return triplePoint.t + (criticalPoint.t - triplePoint.t) * Math.pow(normP, 0.45);
-        }
+      // 更新柱体（第 4 个数据集）
+      const barDataset = myChart.data.datasets[4];
+      barDataset.data = [{ x: p, y: -50 }, { x: p, y: t }];
+      barDataset.borderColor = phase.color + 'dd';
+      barDataset.pointBorderColor = phase.color;
+      myChart.update('none');
 
-        function getMeltingT(p) {
-            if (p < triplePoint.p) return null;
-            return triplePoint.t - 3.5 * Math.log(p / triplePoint.p + 1);
-        }
+      // 同步下方状态条
+      document.getElementById('pVal').textContent = p.toFixed(2) + ' atm';
+      document.getElementById('tVal').textContent = t.toFixed(0) + ' °C';
+      const status = document.getElementById('phaseStatus');
+      status.textContent = phase.name;
+      status.style.color = phase.color;
+      document.getElementById('statusCard').style.borderLeftColor = phase.color;
+    }
 
-        function evaluatePhase(p, t) {
-            if (p >= criticalPoint.p && t >= criticalPoint.t) {
-                return PHASE_CONFIG.SUPERCRITICAL;
-            }
-            if (p < triplePoint.p) {
-                const subT = getSublimationT(p);
-                return t < subT ? PHASE_CONFIG.SOLID : PHASE_CONFIG.GAS;
-            } else {
-                const meltT = getMeltingT(p);
-                if (t < meltT) return PHASE_CONFIG.SOLID;
-
-                if (p <= criticalPoint.p) {
-                    const vapT = getVaporizationT(p);
-                    return t < vapT ? PHASE_CONFIG.LIQUID : PHASE_CONFIG.GAS;
-                } else {
-                    return PHASE_CONFIG.LIQUID;
-                }
-            }
-        }
-
-        // --- 绘制画布 ---
-        function draw() {
-            ctx.clearRect(0, 0, logicalWidth, logicalHeight);
-
-            const currentP = parseFloat(sliderP.value);
-            const currentT = parseFloat(sliderT.value);
-
-            drawAxes();
-            drawCurves();
-            drawSpecialPoints();
-
-            const currentPhase = evaluatePhase(currentP, currentT);
-            drawPhaseBar(currentP, currentT, currentPhase);
-            updateUI(currentP, currentT, currentPhase);
-        }
-
-        function drawAxes() {
-            ctx.strokeStyle = '#21262d';
-            ctx.lineWidth = 1;
-
-            for (let p = 0; p <= 10; p += 2) {
-                const x = mapPToX(p);
-                ctx.beginPath();
-                ctx.moveTo(x, margin.top);
-                ctx.lineTo(x, margin.top + height);
-                ctx.stroke();
-
-                ctx.fillStyle = '#8b949e';
-                ctx.font = '11px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(p + ' atm', x, margin.top + height + 20);
-            }
-
-            for (let t = 0; t <= 400; t += 100) {
-                const y = mapTToY(t);
-                ctx.beginPath();
-                ctx.moveTo(margin.left, y);
-                ctx.lineTo(margin.left + width, y);
-                ctx.stroke();
-
-                ctx.fillStyle = '#8b949e';
-                ctx.font = '11px sans-serif';
-                ctx.textAlign = 'right';
-                ctx.fillText(t + ' °C', margin.left - 10, y + 4);
-            }
-
-            ctx.strokeStyle = '#30363d';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(margin.left, margin.top, width, height);
-        }
-
-        function drawCurves() {
-            ctx.lineWidth = 2;
-
-            // 升华线 (虚线)
-            ctx.strokeStyle = '#38bdf8';
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            let started = false;
-            for (let p = domainP.min; p <= triplePoint.p; p += 0.01) {
-                const t = getSublimationT(p);
-                const x = mapPToX(p);
-                const y = mapTToY(t);
-                if (!started) { ctx.moveTo(x, y); started = true; }
-                else { ctx.lineTo(x, y); }
-            }
-            ctx.stroke();
-
-            // 熔点线
-            ctx.strokeStyle = '#3fb950';
-            ctx.setLineDash([]);
-            ctx.beginPath();
-            started = false;
-            for (let p = triplePoint.p; p <= domainP.max; p += 0.05) {
-                const t = getMeltingT(p);
-                const x = mapPToX(p);
-                const y = mapTToY(t);
-                if (!started) { ctx.moveTo(x, y); started = true; }
-                else { ctx.lineTo(x, y); }
-            }
-            ctx.stroke();
-
-            // 汽化/沸点线 (弯曲界线)
-            ctx.strokeStyle = '#d29922';
-            ctx.beginPath();
-            started = false;
-            for (let p = triplePoint.p; p <= criticalPoint.p; p += 0.02) {
-                const t = getVaporizationT(p);
-                const x = mapPToX(p);
-                const y = mapTToY(t);
-                if (!started) { ctx.moveTo(x, y); started = true; }
-                else { ctx.lineTo(x, y); }
-            }
-            ctx.stroke();
-        }
-
-        function drawSpecialPoints() {
-            const tpX = mapPToX(triplePoint.p);
-            const tpY = mapTToY(triplePoint.t);
-            ctx.fillStyle = '#f85149';
-            ctx.beginPath();
-            ctx.arc(tpX, tpY, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#c9d1d9';
-            ctx.font = '11px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText('三相点 (Triple Point)', tpX + 8, tpY + 3);
-
-            const cpX = mapPToX(criticalPoint.p);
-            const cpY = mapTToY(criticalPoint.t);
-            ctx.fillStyle = '#bc8cff';
-            ctx.beginPath();
-            ctx.arc(cpX, cpY, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillText('临界点 (Critical Point)', cpX + 8, cpY + 3);
-        }
-
-        function drawPhaseBar(p, t, phase) {
-            const barWidth = 20;
-            const barX = mapPToX(p) - barWidth / 2;
-            const barBaseY = mapTToY(domainT.min);
-            const barTopY = mapTToY(t);
-            const barHeight = barBaseY - barTopY;
-
-            // 柱体填充
-            ctx.fillStyle = phase.color + '33'; // 20% 透明度填充
-            ctx.fillRect(barX, barTopY, barWidth, barHeight);
-
-            // 柱体边框
-            ctx.strokeStyle = phase.color;
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(barX, barTopY, barWidth, barHeight);
-
-            // 顶点碰撞判断点
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(barX + barWidth / 2, barTopY, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = phase.color;
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-
-            // 标注数值
-            ctx.fillStyle = '#f0f6fc';
-            ctx.font = '600 11px monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText(`${t.toFixed(0)}°C`, barX + barWidth / 2, barTopY - 10);
-        }
-
-        function updateUI(p, t, phase) {
-            pVal.textContent = p.toFixed(2) + ' atm';
-            tVal.textContent = t.toFixed(0) + ' °C';
-
-            phaseStatus.textContent = phase.name;
-            phaseStatus.style.color = phase.color;
-            statusCard.style.borderLeftColor = phase.color;
-        }
-
-        sliderP.addEventListener('input', draw);
-        sliderT.addEventListener('input', draw);
-
-        // 初始化渲染
-        setupHiDPI();
-        draw();
-    </script>
+    const sliderP = document.getElementById('sliderP');
+    const sliderT = document.getElementById('sliderT');
+    const sync = () => update(parseFloat(sliderP.value), parseFloat(sliderT.value));
+    sliderP.oninput = sync;
+    sliderT.oninput = sync;
+    sync();
+  </script>
 </body>
-
 </html>
